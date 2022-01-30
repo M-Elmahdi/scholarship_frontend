@@ -85,7 +85,6 @@
 
 <script>
 import axios from '@/includes/axiosConfig';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 export default {
   name: 'FormStepThree',
@@ -99,10 +98,6 @@ export default {
       submitMessage: '',
       essay_one: '',
       essay_two: '',
-      editor: ClassicEditor,
-      editorConfig: {
-        toolbar: ['heading', '|', 'bold', 'italic', 'link', 'numberedList', 'bulletedList', 'undo', 'redo'],
-      },
       schema: {
         essay_one: 'required',
         essay_two: 'required',
