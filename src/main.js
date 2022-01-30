@@ -1,7 +1,6 @@
 import { createApp } from 'vue';
 import VueAxios from 'vue-axios';
 import VueSweetalert2 from 'vue-sweetalert2';
-import CKEditor from '@ckeditor/ckeditor5-vue';
 import store from './store';
 import App from './App.vue';
 import router from './router';
@@ -24,7 +23,6 @@ import 'sweetalert2/dist/sweetalert2.min.css';
 function createVueInstance() {
   const app = createApp(App);
 
-  app.use(CKEditor);
   app.use(store);
   app.use(router);
   app.use(VeeValidatePlugin);
