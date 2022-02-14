@@ -89,11 +89,14 @@
     <!-- End Step Two -->
       <hr class="m-2">
       <div class="m-3">
-        <button class="btn btn-success" @click.prevent="submitStepTwo"
-        aria-describedby="infoSubmit">Submit Step Two <i class="fas fa-save"></i></button>
-        <div id="infoSubmit" class="form-text">
-            Note that, once you submit this step, you cannot change any of the existing
-            credentials you've submitted, unless you delete the whole application.
+        <div class="text-end m-3">
+          <button @click.prevent="stepUpToggle"
+          type="button" class="btn btn-primary">
+            Save and Continue <i class="fas fa-arrow-circle-right"></i>
+          </button>
+          <div id="stepOneSubmit" class="form-text">
+            You can navigate through the steps from the tabs above
+          </div>
         </div>
       </div>
     </div>
@@ -103,6 +106,7 @@
 /* eslint-disable max-len */
 /* eslint-disable max-len */
 import axios from '@/includes/axiosConfig';
+import store from '@/store';
 
 export default {
   name: 'FormStepTwo',
@@ -112,6 +116,7 @@ export default {
   },
   data() {
     return {
+      application: store.state.user.application.data,
       deletingFile: false,
       loadingFileTypes: true,
       uploadedFiles: [],
@@ -152,9 +157,10 @@ export default {
       data.append('file', this.file[0]);
       data.append('file_type_id', values.file_type_id);
       data.append('note', values.note);
-      await axios.post(`applicantboard/applications/${this.userApplication.id}/file_upload`, data, this.axiosConfig)
+      await axios.post(`applicantboard/applications/${this.application.id}/file_upload`, data, this.axiosConfig)
         .then((res) => {
           this.uploadingFile = false;
+          this.fetchFiles();
           console.log(res);
         })
         .catch(() => {
@@ -174,9 +180,9 @@ export default {
       }
     },
     async fetchFiles() {
-      await axios.get(`applicantboard/applications/${this.userApplication.id}/files`, this.axiosConfig)
+      await axios.get(`applicantboard/applications/${this.application.id}/files`, this.axiosConfig)
         .then((res) => {
-          this.uploadedFiles = res.data.data;
+          this.uploadedFiles = res.data?.data;
         })
         .catch((err) => {
           console.log(err);
@@ -184,9 +190,10 @@ export default {
     },
     async deleteFile(fileId) {
       this.deletingFile = true;
-      await axios.delete(`applicantboard/applications/${this.userApplication.id}/files/${fileId}`, this.axiosConfig)
+      await axios.delete(`applicantboard/applications/${this.application.id}/files/${fileId}`, this.axiosConfig)
         .then((res) => {
           this.deletingFile = false;
+          this.fetchFiles();
           console.log(res);
         })
         .catch((err) => {
@@ -200,8 +207,6 @@ export default {
   },
   async created() {
     this.fetchFileTypes();
-  },
-  async beforeUpdate() {
     this.fetchFiles();
   },
 };

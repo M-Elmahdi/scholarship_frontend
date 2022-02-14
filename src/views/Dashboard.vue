@@ -1,6 +1,6 @@
 <template>
   <navbar />
-  <applicant :axiosConfig="configGetter" />
+  <applicant/>
 </template>
 
 <script>
@@ -22,6 +22,9 @@ export default {
   },
   computed: {
     ...mapGetters(['configGetter']),
+  },
+  created() {
+    console.log(store.state.user);
   },
   beforeRouteEnter(to, from, next) {
     if (store.state.authenticated) {

@@ -100,16 +100,6 @@ export default {
 
       await axios.post('authboard/login', cred)
         .then((res) => {
-          // const { data } = res.data;
-          // const user = {
-          //   id: data.id,
-          //   email: data.email,
-          //   first_name: data.first_name,
-          //   middle_name: data.middle_name,
-          //   last_name: data.last_name,
-          //   roles: data.roles.data[0].name,
-          //   token: data.token,
-          // };
           const { data } = res.data;
           console.log(`Login data: ${data.application}`);
           const user = {

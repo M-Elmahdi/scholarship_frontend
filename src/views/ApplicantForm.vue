@@ -3,21 +3,31 @@
     <section>
         <div class="card-body border rounded rounded bg-white mb-5
             mt-5 w-75 mx-auto">
-            <ul class="nav nav-tabs">
+            <ul class="nav nav-tabs" >
                 <li class="nav-item">
                     <a class="nav-link btn btn-outline-primary"
                     @click.prevent="stepsDone = 0"
-                    :class="stepOneFlag ? 'active' : ''" role="button">1.Faculty</a>
+                    :class="[
+                    stepOneFlag ? 'active' : '',
+                    applicationSubmitted ? 'disabled' : ''
+                     ]"
+                     role="button">1.Faculty</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" role="button"
                     @click.prevent="stepsDone = 1"
-                    :class="stepTwoFlag ? 'active' : ''">2.Files</a>
+                    :class="[
+                    stepTwoFlag ? 'active' : '',
+                    applicationSubmitted ? 'disabled' : ''
+                    ]">2.Files</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" role="button"
                     @click.prevent="stepsDone = 2"
-                    :class="stepThreeFlag ? 'active' : ''"
+                    :class="[
+                    stepThreeFlag ? 'active' : '',
+                    applicationSubmitted ? 'disabled' : ''
+                    ]"
                     tabindex="-1" aria-disabled="true">
                         3.Essay
                     </a>
@@ -32,36 +42,36 @@
                 </li>
             </ul>
 
-            <!-- STEP ONE -->
-            <step-one v-show="stepOneFlag"
-            :userApplication="userApplication"
-            :axiosConfig="configGetter"
-            @stepUpToggle="stepUpToggle"/>
-            <!-- END STEP ONE -->
+            <keep-alive>
+              <step-one v-if="stepOneFlag"
+              :userApplication="userApplication"
+              :axiosConfig="configGetter"
+              @stepUpToggle="stepUpToggle"/>
+            </keep-alive>
 
-            <!-- STEP TWO -->
-            <step-two v-show="stepTwoFlag"
+            <keep-alive>
+              <step-two v-if="stepTwoFlag"
+              :userApplication="userApplication"
+              :axiosConfig="configGetter"
+              @stepDownToggle="stepDownToggle"
+              @stepUpToggle="stepUpToggle"/>
+            </keep-alive>
+
+            <keep-alive>
+              <step-three v-if="stepThreeFlag"
+              :userApplication="userApplication"
+              :axiosConfig="configGetter"
+              @stepDownToggle="stepDownToggle"
+              @stepUpToggle="stepUpToggle"/>
+            </keep-alive>
+
+            <step-four v-if="stepFourFlag"
             :userApplication="userApplication"
             :axiosConfig="configGetter"
             @stepDownToggle="stepDownToggle"
-            @stepUpToggle="stepUpToggle"/>
-            <!-- END STEP TWO -->
+            @stepUpToggle="stepUpToggle"
+            @submitApplication="submitApplication"/>
 
-            <!-- STEP THREE -->
-            <step-three v-show="stepThreeFlag"
-            :userApplication="userApplication"
-            :axiosConfig="configGetter"
-            @stepDownToggle="stepDownToggle"
-            @stepUpToggle="stepUpToggle"/>
-            <!-- END STEP THREE -->
-
-            <!-- STEP THREE -->
-            <step-four v-show="stepFourFlag"
-            :userApplication="userApplication"
-            :axiosConfig="configGetter"
-            @stepDownToggle="stepDownToggle"
-            @stepUpToggle="stepUpToggle"/>
-            <!-- END STEP THREE -->
         </div>
     </section>
 </template>
@@ -72,6 +82,8 @@ import Navbar from '@/components/Navbar.vue';
 import StepOne from '@/components/applicant/form_steps/StepOne.vue';
 import StepTwo from '@/components/applicant/form_steps/StepTwo.vue';
 import StepThree from '@/components/applicant/form_steps/StepThree.vue';
+import { KeepAlive } from 'vue';
+import store from '@/store';
 import StepFour from '@/components/applicant/form_steps/StepFour.vue';
 
 import { mapGetters } from 'vuex';
@@ -79,13 +91,19 @@ import { mapGetters } from 'vuex';
 export default {
   name: 'ApplicantForm',
   components: {
-    Navbar, StepOne, StepTwo, StepThree, StepFour,
+    KeepAlive,
+    Navbar,
+    StepOne,
+    StepTwo,
+    StepThree,
+    StepFour,
   },
   data() {
     return {
+      applicationSubmitted: false,
       hasApplication: false,
       stepsDone: 0,
-      userApplication: undefined,
+      userApplication: null,
     };
   },
   computed: {
@@ -104,6 +122,10 @@ export default {
     },
   },
   methods: {
+    submitApplication() {
+      this.applicationSubmitted = true;
+      this.stepsDone = 3;
+    },
     stepUpToggle() {
       if (this.stepsDone < 3) {
         this.stepsDone += 1;
@@ -120,15 +142,26 @@ export default {
           if (typeof res.data.data !== 'undefined') {
             this.hasApplication = true;
             this.userApplication = res.data.data;
-            console.log(this.userApplication);
+
+            if (this.userApplication.applicationStatus.data.status_id === 2) {
+              this.applicationSubmitted = true;
+              this.stepsDone = 3;
+            }
           }
-          console.log(this.hasApplication);
         })
         .catch((err) => console.log(err));
     },
   },
   async created() {
-    await this.fetchUserApplication();
+    this.fetchUserApplication();
+  },
+  beforeRouteEnter(to, from, next) {
+    if (store.state.authenticated) {
+      store.dispatch('restoreSession');
+      next();
+    } else {
+      next({ name: '' });
+    }
   },
 };
 </script>

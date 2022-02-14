@@ -16,10 +16,6 @@
                     <div class="mb-3">
                         <h2 class="text-center">Signup to apply for a Scholarship</h2>
                         <hr>
-
-                        <router-link to="/" class="text-start small">
-                            Already have an account? Login
-                        </router-link>
                     </div>
 
                     <div class="col">
@@ -157,6 +153,9 @@
                 class="w-50 d-flex mt-2">
                     {{ signUpMessage }}
                 </div>
+                <router-link to="/" class="text-center small">
+                    Already have an account? Login
+                </router-link>
             </div>
 
         </div>
@@ -207,13 +206,23 @@ export default {
           console.log(err.response);
         });
     },
+    async sendVerificationLink() {
+      await axios.post('applicantboard/email/verify/resend')
+        .then((res) => {
+          console.log(res);
+          this.signUpMessageClass = 'alert alert-success';
+          this.signUpMessage = 'Thank you for signing up, a verification email has been sent to your email';
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
     async signup(values) {
       this.signUpLoading = true;
       await axios.post('applicantboard/signup', values)
         .then(() => {
           this.signUpLoading = false;
-          this.signUpMessage = 'Successfully Signed up';
-          this.signUpMessageClass = 'alert alert-success';
+          this.sendVerificationLink();
         })
         .catch((err) => {
           this.signUpLoading = false;

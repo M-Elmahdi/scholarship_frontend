@@ -22,7 +22,7 @@
                         </div>
                         <!-- End Header -->
 
-                        <div class="col">
+                        <!-- <div class="col">
                             <h5 class="text-center">
                                 Faculties Submitted
                             </h5>
@@ -47,22 +47,66 @@
                             <div class="row border rounded m-2 p-1 bg-white">
                                <p class="text-center">{{ essaysSubmitted ? 'Yes' : 'No' }}</p>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                     <!-- End Application statuses  -->
 
                     <div class="text-end mt-3">
                         <button class="btn btn-primary col-md-3"
                         @click.prevent="this.$router.push({ name: 'applicantForm' })">
-                        Continue
+                            Continue
                         </button>
                     </div>
                 </div>
 
                 <div class="alert alert-warning border fw-bold small">
-                    Please note, even though you'v
-                    uploaded the files and essays needed, you need to
-                    submit each of them individually to finish the application registration process
+                    Please note, even though you've
+                    finished all the steps needed, you need to
+                    submit the application in the end to finish the proccess.
+                </div>
+
+                <div class="text-start">
+                    <!-- Button trigger modal -->
+                    <button type="button"
+                    class="btn btn-danger" data-bs-toggle="modal"
+                    data-bs-target="#exampleModal">
+                    Delete
+                    </button>
+
+                    <!-- Modal -->
+                    <div v-show="!hasApplication"
+                    class="modal fade" id="exampleModal"
+                    tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">
+                                        Delete Application
+                                    </h5>
+                                    <button type="button" class="btn-close"
+                                    data-bs-dismiss="modal" aria-label="Close">
+                                    </button>
+                                </div>
+                                <div class="modal-body text-danger">
+                                    Are you sure you want to delete your application?
+                                    note that you will lose any progress during registration
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal">
+                                        Cancel
+                                    </button>
+                                    <button @click.prevent="deleteApplication()"
+                                    :disabled="deleteLoading"
+                                    type="button" class="btn btn-danger"
+                                    data-bs-dismiss="modal">
+                                        Yes, delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -108,6 +152,7 @@ export default {
       user: store.state.user,
       creationLoading: false,
       content,
+      deleteLoading: false,
     };
   },
   computed: {
@@ -116,13 +161,27 @@ export default {
     },
   },
   methods: {
+    async deleteApplication() {
+      this.deleteLoading = true;
+      await axios.delete(`applicantboard/applications/${this.user.application.data.id}`, null, this.axiosConfig)
+        .then((res) => {
+          this.deleteLoading = false;
+          store.state.user.application = null;
+          console.log(res);
+        })
+        .catch((err) => {
+          this.deleteLoading = false;
+          console.log(err);
+        });
+    },
     async createApplication() {
       this.creationLoading = true;
       await axios.post('applicantboard/application', null, this.axiosConfig)
         .then((res) => {
           console.log(res);
           this.creationLoading = false;
-          this.$router.push('applicant-form');
+          store.dispatch('restoreSession')
+            .then(() => this.$router.push('applicant-form'));
         })
         .catch((err) => {
           console.log(err.response);
@@ -131,8 +190,13 @@ export default {
     },
   },
   mounted() {
-    store.dispatch('restoreSession');
-    console.log(this.axiosConfig);
+    store.dispatch('restoreSession')
+      .then(() => {
+        console.log('successfully restored the session');
+      })
+      .catch(() => {
+        console.log('failed to restore session');
+      });
   },
 };
 </script>

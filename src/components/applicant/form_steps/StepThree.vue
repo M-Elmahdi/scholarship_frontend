@@ -72,19 +72,20 @@
       </div>
       <!-- END FORM DIV -->
       <hr class="m-2">
-      <div class="m-1">
-        <button class="btn btn-success" @click.prevent="submitStepThree"
-        aria-describedby="infoSubmit">Submit Step Three <i class="fas fa-save"></i></button>
-        <div id="infoSubmit" class="form-text">
-            Note that, once you submit this step, you cannot change any of the existing
-            credentials you've submitted, unless you delete the whole application.
+      <div class="m-1 text-end">
+          <button class="btn btn-primary" @click.prevent="stepUpToggle"
+          aria-describedby="stepOneSubmit">Save and continue
+          <i class="fas fa-arrow-circle-right"></i></button>
+          <div id="stepOneSubmit" class="form-text">
+            You can navigate through the steps from the tabs above
+          </div>
         </div>
-      </div>
     </div>
 </template>
 
 <script>
 import axios from '@/includes/axiosConfig';
+import store from '@/store';
 
 export default {
   name: 'FormStepThree',
@@ -95,6 +96,7 @@ export default {
   data() {
     return {
       submitLoading: false,
+      application: store.state.user.application.data,
       submitMessage: '',
       essay_one: '',
       essay_two: '',
@@ -125,11 +127,11 @@ export default {
     },
     async fetchEssayApplcation() {
       this.submitLoading = true;
-      await axios.get(`applicantboard/applications/${this.userApplication.id}/essay`, this.axiosConfig)
+      await axios.get(`applicantboard/applications/${this.application.id}/essay`, this.axiosConfig)
         .then((res) => {
           this.submitLoading = false;
-          this.essay_one = res.data.data.why_essay;
-          this.essay_two = res.data.data.five_year_essay;
+          this.essay_one = res.data.data?.why_essay;
+          this.essay_two = res.data.data?.five_year_essay;
         })
         .catch((err) => {
           console.log(err);
@@ -145,7 +147,7 @@ export default {
         five_year_essay: this.essay_two,
       };
 
-      await axios.put(`applicantboard/applications/${this.userApplication.id}/essay`, data,
+      await axios.put(`applicantboard/applications/${this.application.id}/essay`, data,
         this.axiosConfig)
         .then((res) => {
           console.log(res);
@@ -160,7 +162,7 @@ export default {
       console.log('step three submit');
     },
   },
-  async beforeUpdate() {
+  async created() {
     this.fetchEssayApplcation();
   },
 };

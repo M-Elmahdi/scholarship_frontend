@@ -20,7 +20,7 @@
 
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item dropdown">
-            <router-link to="dashboard" class="nav-link text-white">Dashboard</router-link>
+            <a href="">Home</a>
           </li>
         </ul>
 
@@ -28,10 +28,10 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle text-white small" href="#" id="navbarDropdown"
             role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              {{ `${user.first_name} ${user.last_name}` }}
+              Admin
             </a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" @click.prevent="logout">Logout</a></li>
+              <li><a class="dropdown-item">Logout</a></li>
             </ul>
           </li>
         </ul>
@@ -41,31 +41,17 @@
 </template>
 
 <script>
-import store from '@/store';
-import axios from '@/includes/axiosConfig';
 import { mapGetters } from 'vuex';
-import router from '@/router/index';
 
 export default {
-  name: 'Navbar',
+  name: 'AdminNavbar',
   data() {
     return {
-      user: store.state.user,
+      //
     };
   },
   computed: {
     ...mapGetters(['configGetter']),
-  },
-  methods: {
-    async logout() {
-      await axios.get('authboard/logout', this.configGetter)
-        .then((res) => {
-          console.log(res);
-          store.dispatch('logout')
-            .then(() => router.push({ name: 'login' }));
-        })
-        .catch((err) => console.log(err.response));
-    },
   },
 };
 </script>

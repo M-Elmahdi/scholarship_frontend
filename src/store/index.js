@@ -27,6 +27,8 @@ export default createStore({
     setUnauthenticated(state) {
       state.user = null;
       state.authenticated = false;
+      state.config.headers.Authorization = null;
+      state.token = null;
       localStorage.removeItem('IS-token');
     },
   },
@@ -44,6 +46,7 @@ export default createStore({
             middle_name: data.middle_name,
             last_name: data.last_name,
             email: data.email,
+            roles: data.roles.data[0].name,
             phone_code: data.phone_code,
             phone_number: data.phone_number,
             country: data.country,
