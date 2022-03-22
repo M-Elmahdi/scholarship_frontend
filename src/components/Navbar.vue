@@ -31,7 +31,7 @@
               {{ `${user.first_name} ${user.last_name}` }}
             </a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" @click.prevent="logout">Logout</a></li>
+              <li><a class="dropdown-item btn" @click.prevent="logout">Logout</a></li>
             </ul>
           </li>
         </ul>

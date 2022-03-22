@@ -101,7 +101,9 @@ export default {
       await axios.post('authboard/login', cred)
         .then((res) => {
           const { data } = res.data;
-          const role = res.data.roles.data[0].name;
+          const role = data.roles.data[0].name;
+
+          console.log(role);
 
           if (role === 'admin') {
             const user = {
@@ -109,13 +111,13 @@ export default {
               name: data.name,
               email: data.email,
               roles: data.roles.data[0].name,
+              token: data.token,
             };
 
             this.loginLoading = false;
             this.loginMessage = 'Successfully Logged in';
             this.loginMessageClass = 'alert alert-success';
             store.commit('setAuthenticated', user);
-            console.log(store.state.user);
             this.$router.push('dashboard');
           } else {
             const user = {
@@ -143,12 +145,10 @@ export default {
             this.loginMessage = 'Successfully Logged in';
             this.loginMessageClass = 'alert alert-success';
             store.commit('setAuthenticated', user);
-            console.log(store.state.user);
             this.$router.push('dashboard');
           }
         })
-        .catch((err) => {
-          console.log(err.response);
+        .catch(() => {
           this.loginLoading = false;
           this.loginMessage = 'An error have occurred, try again';
           this.loginMessageClass = 'alert alert-danger';

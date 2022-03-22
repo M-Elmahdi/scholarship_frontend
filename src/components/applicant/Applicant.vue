@@ -1,134 +1,115 @@
 <template>
     <section>
         <div class="container">
-            <div v-if="hasApplication"
-            class="card-body border rounded rounded bg-white
-            mt-5 w-75 mx-auto">
-                <div class="row p-3">
-                    <h4>Continue your application progress</h4>
-                    <p>You haven't finished your Scholarship application yet</p>
+            <div v-if="finishedLoading">
+                <div v-if="hasApplication"
+                class="card-body border rounded rounded bg-white
+                mt-5 w-75 mx-auto">
+                    <div class="row p-3">
+                        <h4>Continue your application progress</h4>
+                        <p>You haven't finished your Scholarship application yet</p>
 
-                    <!-- Application statuses -->
-                    <div class="row border rounded p-3 m-2 bg-light">
-                        <!-- Header -->
-                        <div class="row border rounded m-1 p-1 mb-2 bg-white">
-                            <div class="col-md-2">
-                                Status
-                            </div>
+                        <!-- Application statuses -->
+                        <div class="row border rounded p-3 m-2 bg-light">
+                            <!-- Header -->
+                            <div class="row border rounded m-1 p-1 mb-2 bg-white">
+                                <div class="col-md-2">
+                                    Status
+                                </div>
 
-                            <div class="col">
-                                {{ applicationStatus }}
-                            </div>
-                        </div>
-                        <!-- End Header -->
-
-                        <!-- <div class="col">
-                            <h5 class="text-center">
-                                Faculties Submitted
-                            </h5>
-                            <div class="row border rounded m-2 p-1 bg-white">
-                                <p class="text-center">{{ filesSubmitted ? 'Yes' : 'No' }}</p>
+                                <div class="col">
+                                    {{ applicationStatus }}
+                                </div>
                             </div>
                         </div>
+                        <!-- End Application statuses  -->
 
-                        <div class="col">
-                            <h5 class="text-center">
-                                Files Submitted
-                            </h5>
-                            <div class="row border rounded m-2 p-1 bg-white">
-                                <p class="text-center">{{ filesSubmitted ? 'Yes' : 'No' }}</p>
-                            </div>
+                        <div class="text-end mt-3">
+                            <button class="btn btn-primary col-md-3"
+                            @click.prevent="this.$router.push({ name: 'applicantForm' })">
+                                Continue
+                            </button>
                         </div>
-
-                        <div class="col">
-                            <h5 class="text-center">
-                                Essays Submitted
-                            </h5>
-                            <div class="row border rounded m-2 p-1 bg-white">
-                               <p class="text-center">{{ essaysSubmitted ? 'Yes' : 'No' }}</p>
-                            </div>
-                        </div> -->
                     </div>
-                    <!-- End Application statuses  -->
 
-                    <div class="text-end mt-3">
-                        <button class="btn btn-primary col-md-3"
-                        @click.prevent="this.$router.push({ name: 'applicantForm' })">
-                            Continue
+                    <div class="alert alert-warning border fw-bold small">
+                        Please note, even though you've
+                        finished all the steps needed, you need to
+                        submit the application in the end to finish the proccess.
+                    </div>
+
+                    <div class="text-start">
+                        <!-- Button trigger modal -->
+                        <button type="button"
+                        class="btn btn-danger" data-bs-toggle="modal"
+                        data-bs-target="#exampleModal">
+                        Delete
                         </button>
+
+                        <!-- Modal -->
+                        <div v-show="!hasApplication"
+                        class="modal fade" id="exampleModal"
+                        tabindex="-1" aria-labelledby="exampleModalLabel"
+                        aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">
+                                            Delete Application
+                                        </h5>
+                                        <button type="button" class="btn-close"
+                                        data-bs-dismiss="modal" aria-label="Close">
+                                        </button>
+                                    </div>
+                                    <div class="modal-body text-danger">
+                                        Are you sure you want to delete your application?
+                                        note that you will lose any progress during registration
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">
+                                            Cancel
+                                        </button>
+                                        <button @click.prevent="deleteApplication()"
+                                        :disabled="deleteLoading"
+                                        type="button" class="btn btn-danger"
+                                        data-bs-dismiss="modal">
+                                            Yes, delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="alert alert-warning border fw-bold small">
-                    Please note, even though you've
-                    finished all the steps needed, you need to
-                    submit the application in the end to finish the proccess.
-                </div>
+                <div v-else
+                class="card-body border rounded rounded bg-white mt-5">
+                    <div class="row p-3">
+                        <h4>Criteria For Scholarship</h4>
+                        <ul>
+                            <li v-for="criteria in content.criteria" :key="criteria">
+                                {{ criteria }}
+                            </li>
+                        </ul>
 
-                <div class="text-start">
-                    <!-- Button trigger modal -->
-                    <button type="button"
-                    class="btn btn-danger" data-bs-toggle="modal"
-                    data-bs-target="#exampleModal">
-                    Delete
-                    </button>
-
-                    <!-- Modal -->
-                    <div v-show="!hasApplication"
-                    class="modal fade" id="exampleModal"
-                    tabindex="-1" aria-labelledby="exampleModalLabel"
-                    aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">
-                                        Delete Application
-                                    </h5>
-                                    <button type="button" class="btn-close"
-                                    data-bs-dismiss="modal" aria-label="Close">
-                                    </button>
-                                </div>
-                                <div class="modal-body text-danger">
-                                    Are you sure you want to delete your application?
-                                    note that you will lose any progress during registration
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal">
-                                        Cancel
-                                    </button>
-                                    <button @click.prevent="deleteApplication()"
-                                    :disabled="deleteLoading"
-                                    type="button" class="btn btn-danger"
-                                    data-bs-dismiss="modal">
-                                        Yes, delete
-                                    </button>
-                                </div>
-                            </div>
+                        <div class="text-end">
+                            <button class="btn btn-primary col-md-3" :disabled="creationLoading"
+                            @click.prevent="createApplication()">
+                                Create Application
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div v-else
-            class="card-body border rounded rounded bg-white mt-5">
-                <div class="row p-3">
-                    <h4>Criteria For Scholarship</h4>
-                    <ul>
-                        <li v-for="criteria in content.criteria" :key="criteria">
-                            {{ criteria }}
-                        </li>
-                    </ul>
-
-                    <div class="text-end">
-                        <button class="btn btn-primary col-md-3" :disabled="creationLoading"
-                        @click.prevent="createApplication()">
-                            Create Application
-                        </button>
-                    </div>
+            <div v-else class="d-flex justify-content-center mt-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
                 </div>
             </div>
         </div>
+
     </section>
 
 </template>
@@ -153,6 +134,7 @@ export default {
       creationLoading: false,
       content,
       deleteLoading: false,
+      finishedLoading: false,
     };
   },
   computed: {
@@ -192,6 +174,7 @@ export default {
   mounted() {
     store.dispatch('restoreSession')
       .then(() => {
+        this.finishedLoading = true;
         console.log('successfully restored the session');
       })
       .catch(() => {

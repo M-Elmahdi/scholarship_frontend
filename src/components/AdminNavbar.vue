@@ -28,10 +28,11 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle text-white small" href="#" id="navbarDropdown"
             role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Admin
+              {{ admin.name }}
             </a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item">Logout</a></li>
+              <li><a class="dropdown-item btn"
+              @click="logout">Logout</a></li>
             </ul>
           </li>
         </ul>
@@ -42,16 +43,30 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import store from '@/store';
+import axios from '@/includes/axiosConfig';
+import router from '@/router';
 
 export default {
   name: 'AdminNavbar',
   data() {
     return {
-      //
+      admin: store.state.user,
     };
   },
   computed: {
     ...mapGetters(['configGetter']),
+  },
+  methods: {
+    async logout() {
+      await axios.get('authboard/logout', this.configGetter)
+        .then((res) => {
+          console.log(res);
+          store.dispatch('logout')
+            .then(() => router.push({ name: 'login' }));
+        })
+        .catch((err) => console.log(err.response));
+    },
   },
 };
 </script>

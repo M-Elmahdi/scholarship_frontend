@@ -1,11 +1,11 @@
 import axios from 'axios';
 
 /*
-  Droplet: api-scholarship.limu.edu.ly/api
-  Local: localhost:8000/api
+  Droplet: https://api-scholarship.limu.edu.ly/api
+  Local: http://localhost:8000/api
 * */
 
-// const API_URL = process.env.API_URL || 'api-scholarship.limu.edu.ly/api';
+const API_URL = process.env.API_URL || 'https://api-scholarship.limu.edu.ly/api/';
 
 export default axios.create({
   baseURL: API_URL,

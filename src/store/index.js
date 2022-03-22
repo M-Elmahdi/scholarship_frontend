@@ -18,9 +18,10 @@ export default createStore({
     setAuthenticated(state, data) {
       state.user = data;
       state.authenticated = true;
+      state.role = data.roles;
+      localStorage.setItem('role', data.roles);
 
       if (Object.prototype.hasOwnProperty.call(data, 'token')) {
-        console.log(`inside token condition: ${data.token}`);
         localStorage.setItem('IS-token', data.token);
         state.config.headers.Authorization = `Bearer ${localStorage.getItem('IS-token')}`;
         state.token = `Bearer ${data.token}`;
@@ -30,6 +31,7 @@ export default createStore({
       state.user = null;
       state.authenticated = false;
       state.emailVerified = false;
+      state.role = null;
       state.config.headers.Authorization = null;
       state.token = null;
       localStorage.removeItem('IS-token');

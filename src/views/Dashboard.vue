@@ -1,11 +1,18 @@
 <template>
-  <navbar />
+
+  <div v-if="isAdmin">
+    <admin-navbar />
+  </div>
+
+  <div v-if="isUser">
+    <navbar />
+  </div>
 
   <div v-if="isAdmin">
     <admin-dashboard />
   </div>
 
-  <div v-else>
+  <div v-if="isUser">
 
     <div v-if="emailVerified">
       <applicant/>
@@ -26,12 +33,13 @@ import Applicant from '@/components/applicant/Applicant.vue';
 import AdminDashboard from '@/components/admin/AdminDashboard.vue';
 import { mapGetters } from 'vuex';
 import VerifyEmail from '@/components/applicant/VerifyEmail.vue';
+import AdminNavbar from '@/components/AdminNavbar.vue';
 
 export default {
   name: 'Dashboard',
   user: store.state.user,
   components: {
-    Navbar, Applicant, VerifyEmail, AdminDashboard,
+    Navbar, Applicant, VerifyEmail, AdminDashboard, AdminNavbar,
   },
   data() {
     return {
@@ -41,11 +49,16 @@ export default {
   },
   computed: {
     ...mapGetters(['configGetter']),
-    isAdmin: () => store.state.role === 'admin',
-    isUser: () => store.state.role === 'User',
+    isAdmin() {
+      return store.state.role === 'admin';
+    },
+    isUser() {
+      return store.state.role === 'User';
+    },
   },
   created() {
-    console.log(store.state.user);
+    console.log(store.state.role);
+    console.log(this.isUser);
   },
   beforeRouteEnter(to, from, next) {
     if (store.state.authenticated) {

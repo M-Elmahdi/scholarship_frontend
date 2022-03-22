@@ -79,13 +79,13 @@
   <application-view />
 
     <!-- Button trigger modal -->
-  <button type="button" class="btn btn-primary"
+  <!-- <button type="button" class="btn btn-primary"
   data-bs-toggle="modal" data-bs-target="#exampleModal">
     Launch demo modal
-  </button>
+  </button> -->
 
   <!-- Modal -->
-  <div class="modal fade" id="exampleModal"
+  <!-- <div class="modal fade" id="exampleModal"
   tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-fullscreen">
       <div class="modal-content">
@@ -95,7 +95,7 @@
           class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <!-- <div class="container">
+          <div class="container">
             <div class="row">
               <div class="col">
                 Stuff to write about
@@ -104,13 +104,13 @@
                 Stuff to read about
               </div>
             </div>
-          </div> -->
+          </div>
         </div>
         <div class="modal-footer">
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 
 </template>
 
