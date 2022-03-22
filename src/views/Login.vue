@@ -101,28 +101,51 @@ export default {
       await axios.post('authboard/login', cred)
         .then((res) => {
           const { data } = res.data;
-          console.log(`Login data: ${data.application}`);
-          const user = {
-            id: data.id,
-            first_name: data.first_name,
-            middle_name: data.middle_name,
-            last_name: data.last_name,
-            email: data.email,
-            phone_code: data.phone_code,
-            phone_number: data.phone_number,
-            roles: data.roles.data[0].name,
-            country: data.country,
-            token: data.token,
-            application: Object.prototype.hasOwnProperty.call(data, 'application')
-              ? data.application
-              : null,
-          };
-          this.loginLoading = false;
-          this.loginMessage = 'Successfully Logged in';
-          this.loginMessageClass = 'alert alert-success';
-          store.commit('setAuthenticated', user);
-          console.log(store.state.user);
-          this.$router.push('dashboard');
+          const role = res.data.roles.data[0].name;
+
+          if (role === 'admin') {
+            const user = {
+              id: data.id,
+              name: data.name,
+              email: data.email,
+              roles: data.roles.data[0].name,
+            };
+
+            this.loginLoading = false;
+            this.loginMessage = 'Successfully Logged in';
+            this.loginMessageClass = 'alert alert-success';
+            store.commit('setAuthenticated', user);
+            console.log(store.state.user);
+            this.$router.push('dashboard');
+          } else {
+            const user = {
+              id: data.id,
+              first_name: data.first_name,
+              middle_name: data.middle_name,
+              last_name: data.last_name,
+              email: data.email,
+              email_verified: data.email_verified_at,
+              phone_code: data.phone_code,
+              phone_number: data.phone_number,
+              roles: data.roles.data[0].name,
+              country: data.country,
+              token: data.token,
+              application: Object.prototype.hasOwnProperty.call(data, 'application')
+                ? data.application
+                : null,
+            };
+
+            if (user.email_verified !== null) {
+              store.state.emailVerified = true;
+            }
+
+            this.loginLoading = false;
+            this.loginMessage = 'Successfully Logged in';
+            this.loginMessageClass = 'alert alert-success';
+            store.commit('setAuthenticated', user);
+            console.log(store.state.user);
+            this.$router.push('dashboard');
+          }
         })
         .catch((err) => {
           console.log(err.response);
