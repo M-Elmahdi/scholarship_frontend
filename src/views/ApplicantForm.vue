@@ -42,35 +42,43 @@
                 </li>
             </ul>
 
-            <keep-alive>
-              <step-one v-if="stepOneFlag"
-              :userApplication="userApplication"
-              :axiosConfig="configGetter"
-              @stepUpToggle="stepUpToggle"/>
-            </keep-alive>
+            <div v-if="finishedLoading">
+              <keep-alive>
+                <step-one v-if="stepOneFlag"
+                :userApplication="userApplication"
+                :axiosConfig="configGetter"
+                @stepUpToggle="stepUpToggle"/>
+              </keep-alive>
 
-            <keep-alive>
-              <step-two v-if="stepTwoFlag"
+              <keep-alive>
+                <step-two v-if="stepTwoFlag"
+                :userApplication="userApplication"
+                :axiosConfig="configGetter"
+                @stepDownToggle="stepDownToggle"
+                @stepUpToggle="stepUpToggle"/>
+              </keep-alive>
+
+              <keep-alive>
+                <step-three v-if="stepThreeFlag"
+                :userApplication="userApplication"
+                :axiosConfig="configGetter"
+                @stepDownToggle="stepDownToggle"
+                @stepUpToggle="stepUpToggle"/>
+              </keep-alive>
+
+              <step-four v-if="stepFourFlag"
               :userApplication="userApplication"
               :axiosConfig="configGetter"
               @stepDownToggle="stepDownToggle"
-              @stepUpToggle="stepUpToggle"/>
-            </keep-alive>
+              @stepUpToggle="stepUpToggle"
+              @submitApplication="submitApplication"/>
+            </div>
 
-            <keep-alive>
-              <step-three v-if="stepThreeFlag"
-              :userApplication="userApplication"
-              :axiosConfig="configGetter"
-              @stepDownToggle="stepDownToggle"
-              @stepUpToggle="stepUpToggle"/>
-            </keep-alive>
-
-            <step-four v-if="stepFourFlag"
-            :userApplication="userApplication"
-            :axiosConfig="configGetter"
-            @stepDownToggle="stepDownToggle"
-            @stepUpToggle="stepUpToggle"
-            @submitApplication="submitApplication"/>
+            <div v-else class="d-flex justify-content-center mt-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
 
         </div>
     </section>
@@ -104,6 +112,7 @@ export default {
       hasApplication: false,
       stepsDone: 0,
       userApplication: null,
+      finishedLoading: false,
     };
   },
   computed: {
@@ -142,6 +151,7 @@ export default {
           if (typeof res.data.data !== 'undefined') {
             this.hasApplication = true;
             this.userApplication = res.data.data;
+            this.finishedLoading = true;
 
             if (this.userApplication.applicationStatus.data.status_id === 2) {
               this.applicationSubmitted = true;
@@ -153,7 +163,7 @@ export default {
     },
   },
   async created() {
-    this.fetchUserApplication();
+    await this.fetchUserApplication();
   },
   beforeRouteEnter(to, from, next) {
     if (store.state.authenticated) {

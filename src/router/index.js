@@ -5,7 +5,8 @@ import Login from '@/views/Login.vue';
 import ApplicantForm from '@/views/ApplicantForm.vue';
 import Dashboard from '@/views/Dashboard.vue';
 import AdminDashboard from '@/views/AdminDashboard.vue';
-import NotFound from '../views/NotFound.vue';
+import NotFound from '@/views/NotFound.vue';
+import EmailVerified from '@/views/EmailVerified.vue';
 
 const routes = [
   {
@@ -27,6 +28,11 @@ const routes = [
     path: '/applicant-form',
     name: 'applicantForm',
     component: ApplicantForm,
+  },
+  {
+    path: '/email-verified',
+    name: 'emailVerified',
+    component: EmailVerified,
   },
   {
     path: '/admin-dashboard',

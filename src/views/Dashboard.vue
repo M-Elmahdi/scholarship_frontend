@@ -56,10 +56,6 @@ export default {
       return store.state.role === 'User';
     },
   },
-  created() {
-    console.log(store.state.role);
-    console.log(this.isUser);
-  },
   beforeRouteEnter(to, from, next) {
     if (store.state.authenticated) {
       next();

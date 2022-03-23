@@ -18,7 +18,8 @@
                                 </div>
 
                                 <div class="col">
-                                    {{ applicationStatus }}
+                                    {{ user.application.data.applicationStatus
+                                        .data.submissionStatus.data.status }}
                                 </div>
                             </div>
                         </div>
@@ -122,17 +123,12 @@ import axios from '@/includes/axiosConfig';
 
 export default {
   name: 'Applicant',
-  props: {
-    axiosConfig: Object,
-  },
   data() {
     return {
-      applicationStatus: store.state.user.application?.data.applicationStatus.data.submissionStatus.data.status || null,
-      filesSubmitted: store.state.user.application?.data.files_status || null,
-      essaysSubmitted: store.state.user.application?.data.textuals_status || null,
-      user: store.state.user,
+      user: null,
       creationLoading: false,
       content,
+      axiosConfig: store.state.config,
       deleteLoading: false,
       finishedLoading: false,
     };
@@ -145,15 +141,13 @@ export default {
   methods: {
     async deleteApplication() {
       this.deleteLoading = true;
-      await axios.delete(`applicantboard/applications/${this.user.application.data.id}`, null, this.axiosConfig)
-        .then((res) => {
+      await axios.delete(`applicantboard/applications/${this.user.application.data.id}`, this.axiosConfig)
+        .then(() => {
           this.deleteLoading = false;
           store.state.user.application = null;
-          console.log(res);
         })
-        .catch((err) => {
+        .catch(() => {
           this.deleteLoading = false;
-          console.log(err);
         });
     },
     async createApplication() {
@@ -165,20 +159,17 @@ export default {
           store.dispatch('restoreSession')
             .then(() => this.$router.push('applicant-form'));
         })
-        .catch((err) => {
-          console.log(err.response);
+        .catch(() => {
           this.creationLoading = false;
         });
     },
   },
-  mounted() {
-    store.dispatch('restoreSession')
+  async created() {
+    await store.dispatch('restoreSession')
       .then(() => {
         this.finishedLoading = true;
-        console.log('successfully restored the session');
-      })
-      .catch(() => {
-        console.log('failed to restore session');
+        this.user = store.state.user;
+        this.axiosConfig = store.state.config;
       });
   },
 };

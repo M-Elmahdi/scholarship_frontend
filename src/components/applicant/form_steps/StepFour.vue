@@ -1,5 +1,7 @@
 <template>
-  <div class="border rounded m-3 mt-3 p-2">
+
+    <div v-if="finishedLoading">
+      <div class="border rounded m-3 mt-3 p-2">
       <div class="text-center mt-3">
           <h4>{{ fullname }}</h4>
           <small>{{ user.email }}</small>
@@ -98,8 +100,14 @@
             To redo it, you have to delete the whole application
         </div>
       </div>
+      </div>
+    </div>
+    <div v-else class="d-flex justify-content-center mt-5">
+      <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
 
-  </div>
 </template>
 
 <script>
@@ -123,6 +131,7 @@ export default {
       user: store.state.user,
       assignedFaculties: [],
       uploadedFiles: [],
+      finishedLoading: false,
     };
   },
   computed: {
@@ -135,35 +144,31 @@ export default {
       this.submitMessage = '';
       this.submitLoading = true;
       await axios.post(`applicantboard/applications/${this.application.id}/submit`,
-        { status_id: 2 }, this.configGetter)
-        .then((res) => {
+        { status_id: 2 }, this.axiosConfig)
+        .then(() => {
           this.submitMessageClass = 'alert alert-success';
           this.submitMessage = 'Thank you, you have submitted your application';
           this.submitLoading = false;
-          console.log(res);
           this.$emit('submitApplication');
         })
         .catch((err) => {
+          console.log();
           this.submitMessageClass = 'alert alert-danger';
-          this.submitMessage = 'Something wrong happened make sure you have finished filling your application';
+          // eslint-disable-next-line prefer-destructuring
+          this.submitMessage = err.response.data.error[0];
           this.submitLoading = false;
-          console.log(err.response);
         });
     },
     async fetchAssignedFaculties() {
       await axios.get('applicantboard/applications', this.axiosConfig)
         .then((res) => {
           this.assignedFaculties = res.data.data.applicationFaculties.data;
-        })
-        .catch((err) => console.log(err.response));
+        });
     },
     async fetchFiles() {
       await axios.get(`applicantboard/applications/${this.application.id}/files`, this.axiosConfig)
         .then((res) => {
           this.uploadedFiles = res.data.data;
-        })
-        .catch((err) => {
-          console.log(err);
         });
     },
     async fetchEssayApplcation() {
@@ -173,16 +178,16 @@ export default {
           this.essay_one = res.data.data.why_essay;
           this.essay_two = res.data.data.five_year_essay;
         })
-        .catch((err) => {
-          console.log(err);
+        .catch(() => {
           this.submitLoading = false;
         });
     },
   },
   async created() {
-    this.fetchFiles();
-    this.fetchAssignedFaculties();
-    this.fetchEssayApplcation();
+    await this.fetchFiles();
+    await this.fetchAssignedFaculties();
+    await this.fetchEssayApplcation();
+    this.finishedLoading = true;
   },
 };
 </script>

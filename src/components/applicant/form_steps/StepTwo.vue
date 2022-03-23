@@ -17,6 +17,9 @@
                 {{ `${file_type.name}` }} :: {{ file_type.required ? 'Required' : 'Optional' }}
                 </option>
               </vee-field>
+              <div>
+                <small class="ms-2 small">Only PDF format is allowed</small>
+              </div>
 
               <vee-field id="file" v-model="file"
               :rules="fileWithNoteFlag
