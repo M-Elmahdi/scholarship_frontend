@@ -64,7 +64,6 @@
                 ${application.applicant.data.last_name}` }}</td>
               <td>{{ application.applicant.data.email }}</td>
               <td>{{ application.applicationStatus.data.submissionStatus.data.status }}</td>
-              <!-- <td>{{  }}</td> -->
               <td>{{ application.applicant.data.country.data.name }}</td>
 
               <!-- Dropdown button -->
@@ -75,14 +74,52 @@
 
                   </button>
                   <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">View Application</a></li>
+                    <li>
+                      <!-- Button trigger modal -->
+                      <button type="button" class="dropdown-item" disabled
+                      data-bs-toggle="modal" :data-bs-target="`#modal_${application.id}`">
+                        View application
+                      </button>
+
+                    </li>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item text-success disabled" href="#">
                       Shortlist Applicant
-                      </a></li>
+                    </a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item text-danger disabled" href="#">Delete</a></li>
                   </ul>
+                </div>
+
+                <div class="modal fade" :id="`modal_${application.id}`"
+                tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-fullscreen">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">
+                          <div class="text-center">
+                            {{
+                              `${application.applicant.data.first_name}
+                              ${application.applicant.data.middle_name}
+                              ${application.applicant.data.last_name}`
+                            }}
+                          </div>
+
+                        </h5>
+                        <button type="button"
+                        class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <div class="container">
+                          <div class="row">
+                            <application-view :application="application" />
+                          </div>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </td>
               <!-- End of dropdown button -->
@@ -125,43 +162,6 @@
           <span class="visually-hidden">Loading...</span>
       </div>
   </div>
-
-  <application-view />
-
-    <!-- Button trigger modal -->
-  <!-- <button type="button" class="btn btn-primary"
-  data-bs-toggle="modal" data-bs-target="#exampleModal">
-    Launch demo modal
-  </button> -->
-
-  <!-- Modal -->
-  <!-- <div class="modal fade" id="exampleModal"
-  tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-fullscreen">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Applicant Name</h5>
-          <button type="button"
-          class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <div class="container">
-            <div class="row">
-              <div class="col">
-                Stuff to write about
-              </div>
-              <div class="col">
-                Stuff to read about
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-        </div>
-      </div>
-    </div>
-  </div> -->
-
 </template>
 
 <script>
@@ -176,6 +176,7 @@ export default {
   },
   data() {
     return {
+      applicant: Object,
       paginationLoading: false,
       applicationOpened: false,
       filters: Object,
@@ -232,7 +233,6 @@ export default {
         country_id: Number(values.country_id) === 0 ? null : values.country_id,
         status_id: Number(values.status_id) === 0 ? null : values.status_id,
       };
-      console.log(this.filters);
 
       await this.fetchApplications(1, this.filters);
     },
@@ -243,7 +243,7 @@ export default {
         });
     },
     async fetchApplicationStatuses() {
-      await axios.get('adminboard/application_statuses')
+      await axios.get('adminboard/application_statuses', this.axiosConfig)
         .then((res) => {
           this.statuses = res.data.data;
         });

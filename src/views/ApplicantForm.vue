@@ -165,9 +165,9 @@ export default {
   async created() {
     await this.fetchUserApplication();
   },
-  beforeRouteEnter(to, from, next) {
+  async beforeRouteEnter(to, from, next) {
     if (store.state.authenticated) {
-      store.dispatch('restoreSession');
+      await store.dispatch('restoreSession');
       next();
     } else {
       next({ name: '' });

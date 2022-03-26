@@ -73,7 +73,8 @@
       <!-- END FORM DIV -->
       <hr class="m-2">
       <div class="m-1 text-end">
-          <button class="btn btn-primary" @click.prevent="stepUpToggle"
+          <button class="btn btn-primary" @click.prevent="uploadEssayAndContinue"
+          :disabled="submitLoading"
           aria-describedby="stepOneSubmit">Save and continue
           <i class="fas fa-arrow-circle-right"></i></button>
           <div id="stepOneSubmit" class="form-text">
@@ -120,7 +121,7 @@ export default {
   },
   methods: {
     stepUpToggle() {
-      this.$emit('stepUpToggle');
+
     },
     stepDownToggle() {
       this.$emit('stepDownToggle');
@@ -158,8 +159,26 @@ export default {
           this.submitLoading = false;
         });
     },
-    submitStepThree() {
-      console.log('step three submit');
+    async uploadEssayAndContinue() {
+      this.submitLoading = true;
+      this.submitMessage = '';
+
+      const data = {
+        why_essay: this.essay_one,
+        five_year_essay: this.essay_two,
+      };
+
+      await axios.put(`applicantboard/applications/${this.application.id}/essay`, data,
+        this.axiosConfig)
+        .then((res) => {
+          console.log(res);
+          this.submitLoading = false;
+          this.$emit('stepUpToggle');
+        })
+        .catch((err) => {
+          console.log(err.response);
+          this.submitLoading = false;
+        });
     },
   },
   async created() {

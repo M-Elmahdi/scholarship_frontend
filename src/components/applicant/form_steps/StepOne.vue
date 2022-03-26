@@ -126,7 +126,7 @@ export default {
   methods: {
     async deleteFaculty(faculty) {
       this.deleteFacultyLoading = true;
-      await axios.delete(`applicantboard/applications/${this.application.id}/faculty_priority/${faculty.id}`)
+      await axios.delete(`applicantboard/applications/${this.application.id}/faculty_priority/${faculty.id}`, this.axiosConfig)
         .then((res) => {
           this.fetchApplication();
           this.deleteFacultyLoading = false;
@@ -182,8 +182,8 @@ export default {
     },
   },
   async created() {
-    this.fetchFaculties();
-    this.fetchApplication();
+    await this.fetchFaculties();
+    await this.fetchApplication();
   },
 };
 </script>
