@@ -233,7 +233,8 @@ export default {
         })
         .catch((err) => {
           this.signUpLoading = false;
-          this.signUpMessage = err.response;
+          // eslint-disable-next-line prefer-destructuring
+          this.signUpMessage = err.response.data.error;
           this.signUpMessageClass = 'alert alert-danger';
         });
     },
