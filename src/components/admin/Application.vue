@@ -1,25 +1,28 @@
 <template>
-    <div class="container">
+    <div class="">
       <div class="row">
         <div class="col">
           <!-- Faculties -->
           <div class="m-2 mt-4 p-2 ">
             <h5>Faculties you picked</h5>
-            <ul class="list-group">
-              <li class="list-group-item">
+            <ul v-if="faculties.length > 0" class="list-group">
+              <li v-for="faculty in faculties" :key="faculty.id"
+              class="list-group-item">
                 <div class="row">
                   <div class="col">
                     <span class="fw-bold">
-                      priority
+                      {{ faculty.priority }}
                     </span>
-                    faculty name
+                      {{ faculty.faculty.data.name }}
                   </div>
                 </div>
               </li>
             </ul>
 
-            <div class="alert alert-warning border p-2">
-              Nothing yet
+            <div v-else class="mt-2">
+              <div class="alert alert-warning border">
+                No faculties assigned yet
+              </div>
             </div>
           </div>
           <!-- End Faculties -->
@@ -29,21 +32,34 @@
             <div class="m-2 mt-4 p-2">
               <h5>
                 You have uploaded
-                number/number
+                {{ `${files.length} ${files.length > 1 || files.length ? 'files' : 'file'}` }}
               </h5>
-              <ul class="list-group">
-                <li class="list-group-item">
+              <ul v-if="files.length > 0" class="list-group">
+                <li class="list-group-item"
+                v-for="file in files" :key="file.id">
                  <div class="row">
                     <div class="col">
-                      bla bla
+                      {{ `${file.filetype.data.name}` }}
+                    </div>
+
+                    <div class="col">
+                      {{ `${file.file_name}` }}
+                    </div>
+
+                    <div class="col">
+                      <button class="btn btn-primary mt-3"
+                      @click.prevent="downloadFile(file.file_name)">
+                        Download <i class="fas fa-download"></i>
+                      </button>
                     </div>
                  </div>
-
                 </li>
               </ul>
 
-              <div class="alert alert-warning border p-2">
-                Nothing yet
+              <div v-else>
+                <div class="alert alert-warning border">
+                  No uploaded files yet
+                </div>
               </div>
             </div>
           <!-- END FILES -->
@@ -55,7 +71,7 @@
           <div class="card-body small">
             <h5>First Essay</h5>
             <p class="border rounded p-2">
-              essay one
+              {{ essay.five_year_essay }}
             </p>
           </div>
         </div>
@@ -66,7 +82,7 @@
               Second Essay
             </h5>
             <p class="border rounded p-2">
-              essay two
+              {{ essay.why_essay }}
             </p>
           </div>
 
@@ -76,6 +92,9 @@
 </template>
 
 <script>
+import axios from '@/includes/axiosConfig';
+import store from '@/store';
+
 export default {
   name: 'ApplicationView',
   props: {
@@ -83,11 +102,52 @@ export default {
   },
   data() {
     return {
-
+      faculties: [],
+      axiosConfig: store.state.config,
+      files: [],
+      essay: {},
     };
   },
-  created() {
-    console.log(this.application);
+  computed: {
+
+  },
+  methods: {
+    async downloadFile(fileName) {
+      // const downloadConfig = this.axiosConfig;
+      // downloadConfig.responseType = 'blob';
+      // console.log(downloadConfig);
+      await axios({
+        url: `https://api-scholarship.limu.edu.ly/api/adminboard/applications/${this.application.id}/files/${fileName}`,
+        method: 'GET',
+        responseType: 'blob',
+      })
+        .then((res) => {
+          const url = window.URL.createObjectURL(new Blob([res.data]));
+          // Create link to local copy of JSON
+          const link = document.createElement('a'); // Create anchor tag
+          link.href = url; // set href of anchor tag to link created to local copy of JSON
+          link.setAttribute('download', fileName); // Set redundant attribute - never used
+          document.body.appendChild(link); // Append anchor tag to body
+          link.click(); // Programmatically click link
+        });
+    },
+    async fetchFiles() {
+      await axios.get(`adminboard/applications/${this.application.id}/files`, null, this.axiosConfig)
+        .then((res) => {
+          this.files = res.data.data;
+        });
+    },
+    async fetchEssays() {
+      await axios.get(`adminboard/applications/${this.application.id}/essay`, null, this.axiosConfig)
+        .then((res) => {
+          this.essay = res.data.data;
+        });
+    },
+  },
+  async created() {
+    await this.fetchFiles();
+    await this.fetchEssays();
+    this.faculties = this.application.applicationFaculties.data;
   },
 };
 </script>

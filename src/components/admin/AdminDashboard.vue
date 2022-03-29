@@ -45,6 +45,10 @@
 
         </vee-form>
 
+        <div class="row">
+          <h3 class="text-end">{{ `Total: ${pagination.total}` }}</h3>
+        </div>
+
         <hr>
         <table class="table table-hover">
           <thead>
@@ -67,7 +71,7 @@
               <td>{{ application.applicant.data.country.data.name }}</td>
 
               <!-- Dropdown button -->
-              <td class="text-center">
+              <td>
                 <div class="btn-group">
                   <button type="button" class="btn btn-primary dropdown-toggle"
                   data-bs-toggle="dropdown" aria-expanded="false">
@@ -76,7 +80,7 @@
                   <ul class="dropdown-menu">
                     <li>
                       <!-- Button trigger modal -->
-                      <button type="button" class="dropdown-item" disabled
+                      <button type="button" class="dropdown-item"
                       data-bs-toggle="modal" :data-bs-target="`#modal_${application.id}`">
                         View application
                       </button>
@@ -84,7 +88,7 @@
                     </li>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item text-success disabled" href="#">
-                      Shortlist Applicant
+                      Shortlist applicant
                     </a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item text-danger disabled" href="#">Delete</a></li>
@@ -177,6 +181,7 @@ export default {
   data() {
     return {
       applicant: Object,
+      applicationFaculties: [],
       paginationLoading: false,
       applicationOpened: false,
       filters: Object,
