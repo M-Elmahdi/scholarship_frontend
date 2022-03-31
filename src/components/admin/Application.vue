@@ -113,14 +113,11 @@ export default {
   },
   methods: {
     async downloadFile(fileName) {
-      // const downloadConfig = this.axiosConfig;
-      // downloadConfig.responseType = 'blob';
-      // console.log(downloadConfig);
       await axios({
         url: `https://api-scholarship.limu.edu.ly/api/adminboard/applications/${this.application.id}/files/${fileName}`,
         method: 'GET',
         responseType: 'blob',
-      })
+      }, this.axiosConfig)
         .then((res) => {
           const url = window.URL.createObjectURL(new Blob([res.data]));
           // Create link to local copy of JSON
@@ -132,13 +129,13 @@ export default {
         });
     },
     async fetchFiles() {
-      await axios.get(`adminboard/applications/${this.application.id}/files`, null, this.axiosConfig)
+      await axios.get(`adminboard/applications/${this.application.id}/files`, this.axiosConfig)
         .then((res) => {
           this.files = res.data.data;
         });
     },
     async fetchEssays() {
-      await axios.get(`adminboard/applications/${this.application.id}/essay`, null, this.axiosConfig)
+      await axios.get(`adminboard/applications/${this.application.id}/essay`, this.axiosConfig)
         .then((res) => {
           this.essay = res.data.data;
         });

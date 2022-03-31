@@ -103,8 +103,6 @@ export default {
           const { data } = res.data;
           const role = data.roles.data[0].name;
 
-          console.log(role);
-
           if (role === 'admin') {
             const user = {
               id: data.id,
