@@ -242,7 +242,7 @@ export default {
       await this.fetchApplications(1, this.filters);
     },
     async fetchCountries() {
-      await axios.get('applicantboard/countries')
+      await axios.get('adminboard/countries')
         .then((res) => {
           this.countries = res.data.data;
         });

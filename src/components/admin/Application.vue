@@ -117,7 +117,8 @@ export default {
         url: `https://api-scholarship.limu.edu.ly/api/adminboard/applications/${this.application.id}/files/${fileName}`,
         method: 'GET',
         responseType: 'blob',
-      }, this.axiosConfig)
+        headers: this.axiosConfig.headers,
+      })
         .then((res) => {
           const url = window.URL.createObjectURL(new Blob([res.data]));
           // Create link to local copy of JSON
@@ -126,6 +127,9 @@ export default {
           link.setAttribute('download', fileName); // Set redundant attribute - never used
           document.body.appendChild(link); // Append anchor tag to body
           link.click(); // Programmatically click link
+        })
+        .catch((err) => {
+          console.log(err.response);
         });
     },
     async fetchFiles() {
