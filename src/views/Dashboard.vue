@@ -1,29 +1,30 @@
 <template>
+  <div>
 
-  <div v-if="isAdmin">
-    <admin-navbar />
-  </div>
-
-  <div v-if="isUser">
-    <navbar />
-  </div>
-
-  <div v-if="isAdmin">
-    <admin-dashboard />
-  </div>
-
-  <div v-if="isUser">
-
-    <div v-if="emailVerified">
-      <applicant/>
+    <div v-if="isAdmin">
+      <admin-navbar />
     </div>
 
-    <div v-else>
-      <verify-email />
+    <div v-if="isUser">
+      <navbar />
     </div>
 
-  </div>
+    <div v-if="isAdmin">
+      <admin-dashboard />
+    </div>
 
+    <div v-if="isUser">
+
+      <div v-if="emailVerified">
+        <applicant/>
+      </div>
+
+      <div v-else>
+        <verify-email />
+      </div>
+
+    </div>
+  </div>
 </template>
 
 <script>

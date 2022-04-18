@@ -4,7 +4,7 @@
         <div class="col">
           <!-- Faculties -->
           <div class="m-2 mt-4 p-2 ">
-            <h5>Faculties you picked</h5>
+            <h5>Faculties picked</h5>
             <ul v-if="faculties.length > 0" class="list-group">
               <li v-for="faculty in faculties" :key="faculty.id"
               class="list-group-item">
@@ -31,7 +31,7 @@
           <!-- Files -->
             <div class="m-2 mt-4 p-2">
               <h5>
-                You have uploaded
+                Uploaded
                 {{ `${files.length} ${files.length > 1 || files.length ? 'files' : 'file'}` }}
               </h5>
               <ul v-if="files.length > 0" class="list-group">

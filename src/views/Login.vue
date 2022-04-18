@@ -50,9 +50,9 @@
                       <span class="visually-hidden"></span>
               </div>
             </div>
-            <div class="text-center mt-2">
+            <!-- <div class="text-center mt-2">
               <router-link to="Signup">Don't have an account? Sign-up</router-link>
-            </div>
+            </div> -->
 
             <!-- Alert Messages -->
             <div v-show="loginMessage !== ''" class="mt-3 p-2 text-center"
@@ -68,6 +68,7 @@
 <script>
 import content from '@/assets/widgetContent';
 import { setCookie } from '@/includes/manageCookies';
+// eslint-disable-next-line import/no-cycle
 import store from '@/store';
 import axios from '@/includes/axiosConfig';
 
@@ -140,10 +141,10 @@ export default {
             }
 
             this.loginLoading = false;
-            this.loginMessage = 'Successfully Logged in';
-            this.loginMessageClass = 'alert alert-success';
-            store.commit('setAuthenticated', user);
-            this.$router.push('dashboard');
+            this.loginMessage = 'Sorry application submission period is closed';
+            this.loginMessageClass = 'alert alert-danger';
+            // store.commit('setAuthenticated', user);
+            // this.$router.push('dashboard');
           }
         })
         .catch(() => {

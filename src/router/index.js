@@ -1,12 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router';
-// import store from '@/store';
-import Signup from '@/views/Signup.vue';
 import Login from '@/views/Login.vue';
 import ApplicantForm from '@/views/ApplicantForm.vue';
 import Dashboard from '@/views/Dashboard.vue';
 import AdminDashboard from '@/views/AdminDashboard.vue';
 import NotFound from '@/views/NotFound.vue';
 import EmailVerified from '@/views/EmailVerified.vue';
+import ApplicationClosed from '@/views/ApplicationClosed.vue';
 
 const routes = [
   {
@@ -14,11 +13,11 @@ const routes = [
     name: 'login',
     component: Login,
   },
-  {
-    path: '/signup',
-    name: 'signup',
-    component: Signup,
-  },
+  // {
+  //   path: '/signup',
+  //   name: 'signup',
+  //   component: Signup,
+  // },
   {
     path: '/dashboard',
     name: 'dashboard',
@@ -40,6 +39,11 @@ const routes = [
     component: AdminDashboard,
   },
   {
+    path: '/closed',
+    name: 'closed',
+    component: ApplicationClosed,
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: 'NotFound',
     component: NotFound,
@@ -50,9 +54,5 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
 });
-
-// router.beforeEach(() => {
-//   console.log('entered route');
-// });
 
 export default router;
