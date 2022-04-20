@@ -9,8 +9,16 @@
       <navbar />
     </div>
 
+    <div v-if="isCommitte">
+      <committe-navbar />
+    </div>
+
     <div v-if="isAdmin">
       <admin-dashboard />
+    </div>
+
+    <div v-if="isCommitte">
+      <committe-dashboard />
     </div>
 
     <div v-if="isUser">
@@ -35,12 +43,20 @@ import AdminDashboard from '@/components/admin/AdminDashboard.vue';
 import { mapGetters } from 'vuex';
 import VerifyEmail from '@/components/applicant/VerifyEmail.vue';
 import AdminNavbar from '@/components/AdminNavbar.vue';
+import CommitteDashboard from '@/components/committe/CommitteDashboard.vue';
+import CommitteNavbar from '@/components/CommitteNavbar.vue';
 
 export default {
   name: 'Dashboard',
   user: store.state.user,
   components: {
-    Navbar, Applicant, VerifyEmail, AdminDashboard, AdminNavbar,
+    Navbar,
+    Applicant,
+    VerifyEmail,
+    AdminDashboard,
+    AdminNavbar,
+    CommitteDashboard,
+    CommitteNavbar,
   },
   data() {
     return {
@@ -55,6 +71,9 @@ export default {
     },
     isUser() {
       return store.state.role === 'User';
+    },
+    isCommitte() {
+      return store.state.role === 'committee';
     },
   },
   beforeRouteEnter(to, from, next) {

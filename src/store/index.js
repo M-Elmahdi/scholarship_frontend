@@ -56,7 +56,7 @@ export default createStore({
 
             commit('setAuthenticated', user);
           });
-      } else {
+      } else if (state.role === 'User') {
         await axios.get('applicantboard/userinfo', state.config)
           .then((res) => {
             const { data } = res.data;
@@ -84,6 +84,19 @@ export default createStore({
           })
           .catch((err) => {
             console.log(err.response);
+          });
+      } else {
+        await axios.get('committeeboard/userinfo', state.config)
+          .then((res) => {
+            const { data } = res.data;
+            const user = {
+              id: data.id,
+              name: data.name,
+              email: data.email,
+              roles: data.roles.data[0].name,
+            };
+
+            commit('setAuthenticated', user);
           });
       }
     },

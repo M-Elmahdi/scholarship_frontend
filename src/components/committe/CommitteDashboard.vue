@@ -1,16 +1,6 @@
 <template>
 
   <div v-if="dashFinishedLoading">
-  <div class="nav_blue_gradient pb-3">
-    <div class="container">
-      <div class="text-end">
-        <button class="btn btn-light"
-        data-bs-toggle="modal" data-bs-target="#createMembers">
-          Create Committe Members
-        </button>
-      </div>
-    </div>
-  </div>
     <div class="container mt-5 mb-4">
       <div class="card-body bg-white border rounded">
 
@@ -101,94 +91,7 @@
                       </button>
 
                     </li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li>
-                      <button class="dropdown-item"
-                      data-bs-toggle="modal" :data-bs-target="`#shortlist_${application.id}`">
-                        {{
-                          application.applicationStatus.data.submissionStatus.data.status
-                          === 'Shortlisted'
-                          ?
-                          'Remove from Shortlist'
-                          :
-                          'Shortlist Applicant'
-                          }}
-                      </button>
-                    </li>
                   </ul>
-                </div>
-
-                <!-- Modal -->
-                <div class="modal fade" :id="`shortlist_${application.id}`"
-                data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-                aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                  <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h5 class="modal-title" id="staticBackdropLabel">
-                          Confirm shortlisting
-                        </h5>
-                        <button type="button" class="btn-close"
-                        data-bs-dismiss="modal" aria-label="Close"></button>
-                      </div>
-                      <div class="modal-body">
-                        <div v-if="
-                        application.applicationStatus.data.submissionStatus.data.status
-                          !== 'Shortlisted'
-                        ">
-                          You're about to shortlist the applicant
-                          <div class="fw-bold">
-                            {{
-                              `${application.applicant.data.first_name}
-                              ${application.applicant.data.middle_name}
-                              ${application.applicant.data.last_name}`
-                            }}
-                          </div>
-                          under the email address
-                          <div class="fw-bold">
-                            {{ `${application.applicant.data.email}` }}
-                          </div>
-                          An email will be sent to the applicant after 24 Hours from his
-                          shortlisting action.
-
-                          <hr>
-                          <div class="text-danger">
-                            You can cancel the email sending action if you
-                            <span class="fw-bold underline">
-                              remove the applicant from the shortlist
-                            </span>
-                            under 24 Hours from his shortlisting action.
-                          </div>
-                        </div>
-
-                        <div v-else>
-                          Are you sure you want to remove
-                          {{
-                            `${application.applicant.data.first_name}
-                              ${application.applicant.data.middle_name}
-                              ${application.applicant.data.last_name}`
-                          }}
-                          from the shortlist?
-                        </div>
-
-                      </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary"
-                        data-bs-dismiss="modal">Cancel</button>
-
-                        <button type="button" class="btn btn-success"
-                          data-bs-dismiss="modal"
-                          @click="shortlistApplication(
-                          application.id,
-                          application.applicationStatus.data.submissionStatus.data.status)">
-                          {{
-                            application.applicationStatus.data.submissionStatus.data.status
-                            !== 'Shortlisted' ? 'Shortlist' : 'Remove'
-                          }}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
                 </div>
 
                 <div class="modal fade" :id="`modal_${application.id}`"
@@ -291,33 +194,6 @@
         </nav>
       </div>
     </div>
-
-    <div class="modal fade" id="createMembers"
-      tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-fullscreen">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">
-                <div class="text-center">
-                  Create Members
-                </div>
-
-              </h5>
-              <button type="button"
-              class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <div class="container">
-                <div class="row">
-                  <create-member />
-                </div>
-              </div>
-            </div>
-            <div class="modal-footer">
-            </div>
-          </div>
-        </div>
-      </div>
   </div>
 
   <div v-else class="d-flex justify-content-center mt-5">
@@ -330,15 +206,14 @@
 <script>
 import axios from '@/includes/axiosConfig';
 import store from '@/store';
-import ApplicationView from '@/components/admin/Application.vue';
-import ApplicationEvaluation from '@/components/admin/ApplicationEvaluation.vue';
-import EvaluationScore from '@/components/admin/EvaluationScore.vue';
-import CreateMember from '@/components/admin/CreateMember.vue';
+import ApplicationView from '@/components/committe/Application.vue';
+import ApplicationEvaluation from '@/components/committe/ApplicationEvaluation.vue';
+import EvaluationScore from '@/components/committe/EvaluationScore.vue';
 
 export default {
-  name: 'AdminDashboard',
+  name: 'CommitteDashboard',
   components: {
-    ApplicationView, ApplicationEvaluation, EvaluationScore, CreateMember,
+    ApplicationView, ApplicationEvaluation, EvaluationScore,
   },
   data() {
     return {
@@ -377,7 +252,7 @@ export default {
   methods: {
     async fetchApplications(page) {
       this.paginationLoading = true;
-      await axios.post(`adminboard/applications?page=${page < 1 ? 1 : page}`, this.filters, this.axiosConfig)
+      await axios.post(`committeeboard/applications?page=${page < 1 ? 1 : page}`, this.filters, this.axiosConfig)
         .then((res) => {
           this.paginationLoading = false;
           this.dashFinishedLoading = true;
@@ -404,29 +279,15 @@ export default {
       await this.fetchApplications(1, this.filters);
     },
     async fetchCountries() {
-      await axios.get('adminboard/countries', this.axiosConfig)
+      await axios.get('committeeboard/countries', this.axiosConfig)
         .then((res) => {
           this.countries = res.data.data;
         });
     },
     async fetchApplicationStatuses() {
-      await axios.get('adminboard/application_statuses', this.axiosConfig)
+      await axios.get('committeeboard/application_statuses', this.axiosConfig)
         .then((res) => {
           this.statuses = res.data.data;
-        });
-    },
-    async shortlistApplication(applicationId, applicationStatus) {
-      const status = {
-        status_id: applicationStatus === 'Shortlisted' ? 1 : 3,
-      };
-
-      await axios.put(`adminboard/applications/${applicationId}/status`, status, this.axiosConfig)
-        .then((res) => {
-          console.log(res);
-          this.fetchApplications(this.pagination.currentPage, this.filters);
-        })
-        .catch((err) => {
-          console.log(err.response);
         });
     },
   },

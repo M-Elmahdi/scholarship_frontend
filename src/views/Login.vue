@@ -118,7 +118,7 @@ export default {
             this.loginMessageClass = 'alert alert-success';
             store.commit('setAuthenticated', user);
             this.$router.push('dashboard');
-          } else {
+          } else if (role === 'User') {
             const user = {
               id: data.id,
               first_name: data.first_name,
@@ -145,6 +145,20 @@ export default {
             this.loginMessageClass = 'alert alert-danger';
             // store.commit('setAuthenticated', user);
             // this.$router.push('dashboard');
+          } else {
+            const user = {
+              id: data.id,
+              name: data.name,
+              email: data.email,
+              roles: data.roles.data[0].name,
+              token: data.token,
+            };
+
+            this.loginLoading = false;
+            this.loginMessage = 'Successfully Logged in';
+            this.loginMessageClass = 'alert alert-success';
+            store.commit('setAuthenticated', user);
+            this.$router.push('dashboard');
           }
         })
         .catch(() => {

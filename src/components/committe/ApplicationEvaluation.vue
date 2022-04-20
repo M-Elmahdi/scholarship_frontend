@@ -183,7 +183,7 @@ export default {
   methods: {
     async downloadFile(fileName) {
       await axios({
-        url: `https://api-scholarship.limu.edu.ly/api/adminboard/applications/${this.application.id}/files/${fileName}`,
+        url: `https://api-scholarship.limu.edu.ly/api/committeeboard/applications/${this.application.id}/files/${fileName}`,
         method: 'GET',
         responseType: 'blob',
         headers: this.axiosConfig.headers,
@@ -202,7 +202,7 @@ export default {
         });
     },
     async fetchFiles() {
-      await axios.get(`adminboard/applications/${this.application.id}/files`, this.axiosConfig)
+      await axios.get(`committeeboard/applications/${this.application.id}/files`, this.axiosConfig)
         .then((res) => {
           this.filesLoading = false;
           this.files = res.data.data;
@@ -214,7 +214,7 @@ export default {
         application_id: this.application.id,
       };
 
-      await axios.post('adminboard/applications/scores', filters, this.axiosConfig)
+      await axios.post('committeeboard/applications/scores', filters, this.axiosConfig)
         .then((res) => {
           this.scoresLoading = false;
           console.log(res.data.data);
@@ -227,7 +227,7 @@ export default {
     },
     evaluateApplication(values) {
       this.saveLoading = true;
-      axios.put(`adminboard/applications/${this.application.id}/scores`, values, this.axiosConfig)
+      axios.put(`committeeboard/applications/${this.application.id}/scores`, values, this.axiosConfig)
         .then(() => {
           this.saveMsgClass = 'alert-success';
           this.saveMsg = 'Saved successfully';
