@@ -6,7 +6,7 @@
       <div class="text-end">
         <button class="btn btn-light"
         data-bs-toggle="modal" data-bs-target="#createMembers">
-          Create Committe Members
+          Create Committee Members
         </button>
       </div>
     </div>
@@ -421,8 +421,7 @@ export default {
       };
 
       await axios.put(`adminboard/applications/${applicationId}/status`, status, this.axiosConfig)
-        .then((res) => {
-          console.log(res);
+        .then(() => {
           this.fetchApplications(this.pagination.currentPage, this.filters);
         })
         .catch((err) => {

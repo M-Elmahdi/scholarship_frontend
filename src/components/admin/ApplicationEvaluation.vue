@@ -217,7 +217,6 @@ export default {
       await axios.post('adminboard/applications/scores', filters, this.axiosConfig)
         .then((res) => {
           this.scoresLoading = false;
-          console.log(res.data.data);
           // eslint-disable-next-line prefer-destructuring
           this.scores = res.data.data[0];
         })

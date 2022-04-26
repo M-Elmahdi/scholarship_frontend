@@ -1,7 +1,7 @@
 <template>
 <div class="row">
     <div class="col">
-        Committe Members
+        Committee Members
         <div v-if="members !== null">
             <div v-if="members.length > 0">
                 <ol v-for="member in members" :key="member"
@@ -20,7 +20,7 @@
             </div>
         <div v-else>
             <div class="alert alert-warning border m-3">
-                No Committe members are registered in the system yet
+                No Committee members are registered in the system yet
             </div>
         </div>
         </div>
@@ -37,31 +37,40 @@
             <div class="row">
                 <h5 class="text-center">Create a member</h5>
 
-                <div class="row mb-3">
+                <div class="row mb-2">
                     <label class="form-label">
                         Name
                     </label>
                     <vee-field name="name" class="form-control" />
+                    <div class="form-text text-sm">
+                        Name should be atleast 3 characters
+                    </div>
                     <error-message class="text-danger small" name="name" />
                 </div>
 
-                <div class="row mb-3">
+                <div class="row mb-2">
                     <label class="form-label">
                         Email
                     </label>
                     <vee-field name="email" class="form-control" />
+                    <div class="form-text text-sm">
+                        A valid email syntax is required
+                    </div>
                     <error-message class="text-danger small" name="email" />
                 </div>
 
-                <div class="row mb-3">
+                <div class="row mb-2">
                     <label class="form-label">
                         Password
                     </label>
                     <vee-field type="password" name="password" class="form-control" />
+                    <div class="form-text text-sm">
+                        Password should be atleast 8 characters minimum
+                    </div>
                     <error-message class="text-danger small" name="password" />
                 </div>
 
-                <div class="row mb-3">
+                <div class="row mb-2">
                     <label class="form-label">
                         Password Confirmation
                     </label>
@@ -120,8 +129,7 @@ export default {
       this.registerMsg = '';
       this.registerloading = true;
       await axios.post('adminboard/committees', values, this.axiosConfig)
-        .then((res) => {
-          console.log(res);
+        .then(() => {
           this.registerloading = false;
           this.fetchCommitteMembers();
         })

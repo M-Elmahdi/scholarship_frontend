@@ -39,7 +39,6 @@ export default {
       await axios.post('adminboard/applications/scores', filters, this.axiosConfig)
         .then((res) => {
           this.scoresLoading = false;
-          console.log(res.data.data);
           this.scores = res.data.data[0];
         })
         .catch((err) => {

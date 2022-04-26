@@ -1,5 +1,6 @@
 import { createStore } from 'vuex';
 import axios from '@/includes/axiosConfig';
+// import router from '@/router';
 
 export default createStore({
   state: {
@@ -55,6 +56,10 @@ export default createStore({
             };
 
             commit('setAuthenticated', user);
+          })
+          .catch(() => {
+            commit('setUnauthenticated');
+            // router.push('/');
           });
       } else if (state.role === 'User') {
         await axios.get('applicantboard/userinfo', state.config)
@@ -82,8 +87,9 @@ export default createStore({
 
             commit('setAuthenticated', user);
           })
-          .catch((err) => {
-            console.log(err.response);
+          .catch(() => {
+            commit('setUnauthenticated');
+            // router.push('/');
           });
       } else {
         await axios.get('committeeboard/userinfo', state.config)
@@ -97,6 +103,10 @@ export default createStore({
             };
 
             commit('setAuthenticated', user);
+          })
+          .catch(() => {
+            commit('setUnauthenticated');
+            // router.push('/');
           });
       }
     },
