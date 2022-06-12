@@ -4,8 +4,19 @@
     <div class="container mt-5 mb-4">
       <div class="card-body bg-white border rounded">
 
+      <!-- <pdf-viewer /> -->
+
         <vee-form @submit="fetchWithFilter" :initial-values="initialValues">
           <div class="row">
+
+              <div class="col">
+                  <div class="mb-3">
+                      <label class="form-label">Applicant Id</label>
+                      <vee-field type="number" name="applicant_id"
+                      class="form-control" />
+                  </div>
+              </div>
+
               <div class="col-md-4">
                   <div class="mb-3">
                       <label class="form-label">
@@ -209,11 +220,13 @@ import store from '@/store';
 import ApplicationView from '@/components/committe/Application.vue';
 import ApplicationEvaluation from '@/components/committe/ApplicationEvaluation.vue';
 import EvaluationScore from '@/components/committe/EvaluationScore.vue';
+// import PdfViewer from '@/components/PdfViewer.vue';
 
 export default {
   name: 'CommitteDashboard',
   components: {
     ApplicationView, ApplicationEvaluation, EvaluationScore,
+    // PdfViewer,
   },
   data() {
     return {
@@ -274,6 +287,8 @@ export default {
       this.filters = {
         country_id: Number(values.country_id) === 0 ? null : values.country_id,
         status_id: Number(values.status_id) === 0 ? null : values.status_id,
+        applicant_id: Number(values.applicant_id) === 0 ? null : values.applicant_id,
+
       };
 
       await this.fetchApplications(1, this.filters);
