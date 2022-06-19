@@ -7,6 +7,7 @@ export default createStore({
     user: null,
     authenticated: false,
     emailVerified: false,
+    fileName: '',
     token: localStorage.getItem('IS-token') || null,
     role: localStorage.getItem('role') || null,
     config: {

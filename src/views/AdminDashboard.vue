@@ -1,5 +1,6 @@
 <template>
-    <admin-navbar />
+<div>
+<admin-navbar />
     <div class="container mt-5 mb-4">
       <div class="card-body bg-white border rounded">
         <h5>All Applicants</h5>
@@ -60,6 +61,7 @@
           </nav>
         </div>
     </div>
+</div>
 
 </template>
 

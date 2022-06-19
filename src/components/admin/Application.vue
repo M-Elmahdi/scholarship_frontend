@@ -47,11 +47,30 @@
                     </div>
 
                     <div class="col">
-                      <button class="btn btn-primary mt-3"
-                      @click.prevent="downloadFile(file.file_name)">
-                        Download <i class="fas fa-download"></i>
-                      </button>
+
+                      <div class="float-end gap-2">
+                        <button class="btn btn-primary m-2"
+                        @click.prevent="downloadFile(file.file_name)">
+                          <i class="fas fa-download"></i>
+                        </button>
+
+                        <button
+                        @click.prevent = "viewFile(file)"
+                        class="btn btn-primary m-2"
+                        target="_blank">
+                          <i class="fas fa-eye"></i>
+                        </button>
+                        <!-- <button class="btn btn-primary m-2"
+                        @click.prevent="viewFile(file)">
+                          <i class="fas fa-eye"></i>
+                        </button> -->
+                      </div>
+
                     </div>
+
+                    <!-- <div class="col">
+
+                    </div> -->
                  </div>
                 </li>
               </ul>
@@ -108,9 +127,6 @@ export default {
       essay: {},
     };
   },
-  computed: {
-
-  },
   methods: {
     async downloadFile(fileName) {
       await axios({
@@ -131,6 +147,17 @@ export default {
         .catch((err) => {
           console.log(err.response);
         });
+    },
+    viewFile(file) {
+      localStorage.setItem('fileName', file.file_name);
+      localStorage.setItem('application_id', this.application.id);
+
+      const routeData = this.$router.resolve(
+        {
+          name: 'pdf-player',
+        },
+      );
+      window.open(routeData.href, '_blank');
     },
     async fetchFiles() {
       await axios.get(`adminboard/applications/${this.application.id}/files`, this.axiosConfig)

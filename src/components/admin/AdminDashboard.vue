@@ -14,8 +14,6 @@
     <div class="container mt-5 mb-4">
       <div class="card-body bg-white border rounded">
 
-      <!-- <pdf-viewer /> -->
-
         <vee-form @submit="fetchWithFilter" :initial-values="initialValues">
           <div class="row">
 
@@ -345,7 +343,6 @@ import ApplicationView from '@/components/admin/Application.vue';
 import ApplicationEvaluation from '@/components/admin/ApplicationEvaluation.vue';
 import EvaluationScore from '@/components/admin/EvaluationScore.vue';
 import CreateMember from '@/components/admin/CreateMember.vue';
-// import PdfViewer from '@/components/PdfViewer.vue';
 
 export default {
   name: 'AdminDashboard',
@@ -354,7 +351,6 @@ export default {
     ApplicationEvaluation,
     EvaluationScore,
     CreateMember,
-    // PdfViewer,
   },
   data() {
     return {

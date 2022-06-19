@@ -6,6 +6,7 @@ import AdminDashboard from '@/views/AdminDashboard.vue';
 import NotFound from '@/views/NotFound.vue';
 import EmailVerified from '@/views/EmailVerified.vue';
 import ApplicationClosed from '@/views/ApplicationClosed.vue';
+import PdfVuer from '@/components/PdfVuer.vue';
 
 const routes = [
   {
@@ -42,6 +43,11 @@ const routes = [
     path: '/closed',
     name: 'closed',
     component: ApplicationClosed,
+  },
+  {
+    path: '/pdf-player',
+    name: 'pdf-player',
+    component: PdfVuer,
   },
   {
     path: '/:pathMatch(.*)*',
